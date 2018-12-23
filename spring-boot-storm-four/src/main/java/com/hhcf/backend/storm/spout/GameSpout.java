@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -17,9 +17,10 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.alibaba.fastjson.JSON;
-import com.hhcf.backend.system.config.SpringBeanContext;
 import com.hhcf.backend.system.constant.BaseConstants;
 import com.hhcf.backend.system.constant.Constants;
 
@@ -37,15 +38,27 @@ public class GameSpout extends BaseRichSpout {
 	private KafkaConsumer<String, String> consumer;
 	private ConsumerRecords<String, String> msgList;
 	private BaseConstants app;
+	protected ConfigurableApplicationContext applicationContext;
 
 	/**
 	 * 初始化
 	 */
 	@Override
 	public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
-		this.app = SpringBeanContext.getBean(BaseConstants.class);
-		kafkaInit();
-		this.collector = collector;
+//		this.app = SpringBeanContext.getBean(BaseConstants.class);
+		
+		try {
+			if (applicationContext == null) {
+				applicationContext = new ClassPathXmlApplicationContext("classpath:applicationContext-redis.xml");
+			}
+			app=(BaseConstants) applicationContext.getBean("baseConstants");
+			kafkaInit();
+			this.collector = collector;
+			logger.info("bolt端，spring上下文加载:{}", app);
+
+		} catch (Exception e) {
+			logger.error("初始化配置信息失败：" + e.getMessage(), e);
+		}
 	}
 
 	/**
@@ -94,15 +107,23 @@ public class GameSpout extends BaseRichSpout {
 	 */
 	public void kafkaInit() {
 		Properties props = new Properties();
-		props.put("bootstrap.servers", app.getServers());
-		props.put("max.poll.records", app.getMaxPollRecords());
-		props.put("enable.auto.commit", app.getAutoCommit());
-		props.put("group.id", app.getGroupId());
-		props.put("auto.offset.reset", app.getCommitRule());
+//		props.put("bootstrap.servers", app.getServers());
+//		props.put("max.poll.records", app.getMaxPollRecords());
+//		props.put("enable.auto.commit", app.getAutoCommit());
+//		props.put("group.id", app.getGroupId());
+//		props.put("auto.offset.reset", app.getCommitRule());
+//		String topic = app.getTopicName();
+		
+		props.put("bootstrap.servers", "192.168.1.131:9092");
+		props.put("max.poll.records", 100);
+		props.put("enable.auto.commit", false);
+		props.put("group.id", "groupA");
+		props.put("auto.offset.reset", "earliest");
+		String topic = "USER-TOPIC";
+		
 		props.put("key.deserializer", StringDeserializer.class.getName());
 		props.put("value.deserializer", StringDeserializer.class.getName());
 		consumer = new KafkaConsumer<>(props);
-		String topic = app.getTopicName();
 		this.consumer.subscribe(Arrays.asList(topic));
 		logger.info("消息队列[" + topic + "] 开始初始化...");
 	}

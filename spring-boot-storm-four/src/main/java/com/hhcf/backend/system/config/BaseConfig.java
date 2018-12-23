@@ -82,33 +82,33 @@ public class BaseConfig {
 		return factory;
 	}
 
-	@Bean("stringRedisTemplate")
-	public StringRedisTemplate stringRedisTemplate() {
-		StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
-		stringRedisTemplate.setConnectionFactory(connectionFactory());
-		return stringRedisTemplate;
-	}
-
-	@Bean("redisTemplate")
-	public RedisTemplate<String, Object> redisTemplate() {
-		RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
-		template.setConnectionFactory(connectionFactory());
-		setSerializer(template);// 设置序列化工具
-		template.afterPropertiesSet();
-		return template;
-	}
-
-	private void setSerializer(RedisTemplate<String, Object> template) {
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-		ObjectMapper om = new ObjectMapper();
-		om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-		om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-		jackson2JsonRedisSerializer.setObjectMapper(om);
-		template.setValueSerializer(jackson2JsonRedisSerializer);
-		template.setHashKeySerializer(jackson2JsonRedisSerializer);// 乱码解决
-		template.setHashValueSerializer(jackson2JsonRedisSerializer);
-	}
+//	@Bean("stringRedisTemplate")
+//	public StringRedisTemplate stringRedisTemplate() {
+//		StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
+//		stringRedisTemplate.setConnectionFactory(connectionFactory());
+//		return stringRedisTemplate;
+//	}
+//
+//	@Bean("redisTemplate")
+//	public RedisTemplate<String, Object> redisTemplate() {
+//		RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
+//		template.setConnectionFactory(connectionFactory());
+//		setSerializer(template);// 设置序列化工具
+//		template.afterPropertiesSet();
+//		return template;
+//	}
+//
+//	private void setSerializer(RedisTemplate<String, Object> template) {
+//		@SuppressWarnings({ "rawtypes", "unchecked" })
+//		Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
+//		ObjectMapper om = new ObjectMapper();
+//		om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+//		om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+//		jackson2JsonRedisSerializer.setObjectMapper(om);
+//		template.setValueSerializer(jackson2JsonRedisSerializer);
+//		template.setHashKeySerializer(jackson2JsonRedisSerializer);// 乱码解决
+//		template.setHashValueSerializer(jackson2JsonRedisSerializer);
+//	}
 
 	// /**
 	// * 自定义异步线程池
