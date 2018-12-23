@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>storm-overall</groupId>
+	<artifactId>spring-boot-storm-overall</artifactId>
+	<packaging>pom</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>spring-boot-storm-overall Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+
+	<build>
+		<finalName>spring-boot-storm-overall</finalName>
+	</build>
+
+	<modules>
+		<module>spring-boot-storm-one</module>
+    <module>spring-boot-storm-two</module>
+    <module>spring-boot-storm-three</module>
+    <module>spring-boot-storm-four</module>
+  </modules>
+</project>
