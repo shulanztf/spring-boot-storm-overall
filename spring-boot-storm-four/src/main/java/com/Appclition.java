@@ -1,13 +1,12 @@
 package com;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import com.hhcf.backend.comm.service.HelloMessageService;
+import com.hhcf.backend.storm.topo.GameTopoStarter;
+import com.hhcf.backend.system.config.SpringBeanContext;
 
 /**
  * 
@@ -18,36 +17,23 @@ import com.hhcf.backend.comm.service.HelloMessageService;
  */
 @SpringBootApplication
 public class Appclition implements CommandLineRunner {
-    @Autowired
-    private HelloMessageService helloService;
-    
+
 	public static void main(String[] args) {
-		SpringApplication.run(Appclition.class, args);
+		ConfigurableApplicationContext context = SpringApplication.run(Appclition.class, args);
+		// storm配置
+//		GetSpringBean beans = new GetSpringBean();
+//		beans.setApplicationContext(context);
+//		WordCountTopology app = GetSpringBean.getBean(WordCountTopology.class);
+//		app.runStorm(args);
 
-		// ConfigurableApplicationContext context =
-		// SpringApplication.run(Appclition.class, args);
-		// // storm配置
-		// GetSpringBean beans = new GetSpringBean();
-		// beans.setApplicationContext(context);
-		// TopologyApp app = GetSpringBean.getBean(TopologyApp.class);
-		// app.runStorm(args);
-
-		// disabled banner, don't want to see the spring logo
-
+		SpringBeanContext beans = new SpringBeanContext();
+		beans.setApplicationContext(context);
+		GameTopoStarter topo = SpringBeanContext.getBean(GameTopoStarter.class);
+		topo.runStorm(args);
 	}
 
 	public void run(String... args) throws Exception {
-		// TODO Auto-generated method stub
 		System.out.println(args + ",aaaaaaaaaaaaaaa");
-		// for (int i = 0; i < 100; i++) {
-		// System.out.println("aaa:" + System.currentTimeMillis());
-		// Thread.sleep(1000 * 1);
-		// }
-		if (args.length > 0) {
-			System.out.println(helloService.getMessage(args[0].toString()));
-		} else {
-			System.out.println(helloService.getMessage());
-		}
 
 	}
 
